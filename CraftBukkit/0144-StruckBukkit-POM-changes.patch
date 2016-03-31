@@ -1,0 +1,47 @@
+From 574388035687e0702f90617302c9186294c67d3d Mon Sep 17 00:00:00 2001
+From: Kailan Blanks <kailan@kmp.pw>
+Date: Thu, 31 Mar 2016 15:24:57 +0100
+Subject: [PATCH] StruckBukkit POM changes
+
+
+diff --git a/pom.xml b/pom.xml
+index 6b9fc29..c1b673e 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -1,18 +1,17 @@
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+-    <groupId>tc.oc</groupId>
+-    <artifactId>sportbukkit</artifactId>
++    <groupId>co.enviark</groupId>
++    <artifactId>struckbukkit</artifactId>
+     <packaging>jar</packaging>
+     <version>1.9.2-R0.1-SNAPSHOT</version>
+-    <name>SportBukkit</name>
+-    <url>https://oc.tc</url>
++    <name>StruckBukkit</name>
+ 
+     <properties>
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+         <api.version>unknown</api.version>
+         <minecraft.version>1.9.2</minecraft.version>
+-        <buildtag.prefix>git-SportBukkit-</buildtag.prefix>
++        <buildtag.prefix>git-StruckBukkit-</buildtag.prefix>
+         <buildtag.suffix></buildtag.suffix>
+         <maven.compiler.source>1.6</maven.compiler.source>
+         <maven.compiler.target>1.6</maven.compiler.target>
+@@ -31,8 +30,8 @@
+ 
+     <dependencies>
+         <dependency>
+-            <groupId>tc.oc</groupId>
+-            <artifactId>sportbukkit-api</artifactId>
++            <groupId>co.enviark</groupId>
++            <artifactId>struckbukkit-api</artifactId>
+             <version>${project.version}</version>
+             <scope>compile</scope>
+         </dependency>
+-- 
+2.7.2
+

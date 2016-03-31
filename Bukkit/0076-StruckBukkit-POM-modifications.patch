@@ -1,0 +1,30 @@
+From f51916eac94c3184f409e46ed102eff4a14d50b8 Mon Sep 17 00:00:00 2001
+From: Kailan Blanks <kailan@kmp.pw>
+Date: Thu, 31 Mar 2016 15:23:56 +0100
+Subject: [PATCH] StruckBukkit POM modifications
+
+
+diff --git a/pom.xml b/pom.xml
+index cad5a73..3656eac 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -3,13 +3,12 @@
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+ 
+-    <groupId>tc.oc</groupId>
+-    <artifactId>sportbukkit-api</artifactId>
++    <groupId>co.enviark</groupId>
++    <artifactId>struckbukkit-api</artifactId>
+     <version>1.9.2-R0.1-SNAPSHOT</version>
+     <packaging>jar</packaging>
+ 
+-    <name>SportBukkit API</name>
+-    <url>https://oc.tc</url>
++    <name>StruckBukkit API</name>
+ 
+     <properties>
+         <maven.compiler.source>1.6</maven.compiler.source>
+-- 
+2.7.2
+
