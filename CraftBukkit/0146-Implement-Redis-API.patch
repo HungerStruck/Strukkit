@@ -1,0 +1,85 @@
+From 83240ae73138ba75f7a433c216222a6407c0fc7b Mon Sep 17 00:00:00 2001
+From: Kailan Blanks <kailan@kmp.pw>
+Date: Thu, 31 Mar 2016 15:52:10 +0100
+Subject: [PATCH] Implement Redis API
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index cf2b137..3158e50 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -131,6 +131,8 @@ import io.netty.buffer.Unpooled;
+ import io.netty.handler.codec.base64.Base64;
+ import jline.console.ConsoleReader;
+ import net.md_5.bungee.api.chat.BaseComponent;
++import redis.clients.jedis.Jedis;
++import redis.clients.jedis.JedisPool;
+ 
+ public final class CraftServer extends CraftBukkitRuntime implements Server {
+     private static final Player[] EMPTY_PLAYER_ARRAY = new Player[0];
+@@ -175,6 +177,10 @@ public final class CraftServer extends CraftBukkitRuntime implements Server {
+     public boolean bungee = false;
+     public static final com.google.gson.Gson gson = new com.google.gson.Gson();
+ 
++    // struckbukkit start
++    private JedisPool jedis;
++    // struckbukkit end
++
+     private final class BooleanWrapper {
+         private boolean value = true;
+     }
+@@ -260,6 +266,24 @@ public final class CraftServer extends CraftBukkitRuntime implements Server {
+         chunkGCLoadThresh = configuration.getInt("chunk-gc.load-threshold");
+         loadIcon();
+ 
++        // struckbukkit start
++
++        try {
++            jedis = new JedisPool(configuration.getString("redis.host"), configuration.getInt("redis.port"));
++            Jedis test = null;
++            try {
++                test = jedis.getResource();
++                test.ping();
++                getLogger().info("Connected to Redis");
++            } finally {
++                if (test != null) test.close();
++            }
++        } catch (Exception e) {
++            getLogger().log(Level.WARNING, "Unable to connect to Redis", e);
++        }
++
++        // struckbukkit end
++
+         loadPlugins();
+         enablePlugins(PluginLoadOrder.STARTUP);
+     }
+@@ -1789,4 +1813,14 @@ public final class CraftServer extends CraftBukkitRuntime implements Server {
+     public Set<Integer> getProtocolVersions() {
+         return ImmutableSet.of(107, 108, 109);
+     }
++
++    // struckbukkit start
++
++    @Override
++    public JedisPool getRedis() {
++        return jedis;
++    }
++
++    // struckbukkit end
++
+ }
+diff --git a/src/main/resources/configurations/bukkit.yml b/src/main/resources/configurations/bukkit.yml
+index 6867fe3..ad4b813 100644
+--- a/src/main/resources/configurations/bukkit.yml
++++ b/src/main/resources/configurations/bukkit.yml
+@@ -44,3 +44,6 @@ database:
+     driver: org.sqlite.JDBC
+     password: walrus
+     url: jdbc:sqlite:{DIR}{NAME}.db
++redis:
++    host: 127.0.0.1
++    port: 6379
+\ No newline at end of file
+-- 
+2.7.2
+
