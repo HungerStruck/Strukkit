@@ -1,0 +1,86 @@
+From 6881362214ed59ee419e2a0b0499716a4aea1ad9 Mon Sep 17 00:00:00 2001
+From: Kailan Blanks <kailan@kmp.pw>
+Date: Thu, 31 Mar 2016 15:52:00 +0100
+Subject: [PATCH] Add Redis API
+
+
+diff --git a/pom.xml b/pom.xml
+index 3656eac..b3cb0c1 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -98,6 +98,13 @@
+             <artifactId>minecraft-api</artifactId>
+             <version>1.9-SNAPSHOT</version>
+         </dependency>
++        <!-- struckbukkit start -->
++        <dependency>
++            <groupId>redis.clients</groupId>
++            <artifactId>jedis</artifactId>
++            <version>2.8.1</version>
++        </dependency>
++        <!-- struckbukkit end -->
+ 
+         <!-- testing -->
+         <dependency>
+diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
+index 4623612..0945b1f 100644
+--- a/src/main/java/org/bukkit/Bukkit.java
++++ b/src/main/java/org/bukkit/Bukkit.java
+@@ -50,6 +50,7 @@ import org.bukkit.generator.ChunkGenerator;
+ 
+ import org.bukkit.inventory.ItemFactory;
+ import org.bukkit.inventory.meta.ItemMeta;
++import redis.clients.jedis.JedisPool;
+ 
+ /**
+  * Represents the Bukkit core, for version and Server singleton handling
+@@ -1311,4 +1312,18 @@ public final class Bukkit {
+     public static PotionEffectRegistry potionEffectRegistry() {
+         return runtime().potionEffectRegistry();
+     }
++
++    // struckbukkit start
++
++    /**
++     * Returns a pool of Redis connections
++     *
++     * @return the jedis connection pool
++     */
++    public static JedisPool getRedis() {
++        return server.getRedis();
++    }
++
++    // struckbukkit end
++
+ }
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index bdfe2dc..6532835 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -48,6 +48,7 @@ import org.bukkit.generator.ChunkGenerator;
+ 
+ import org.bukkit.inventory.ItemFactory;
+ import org.bukkit.inventory.meta.ItemMeta;
++import redis.clients.jedis.JedisPool;
+ 
+ /**
+  * Represents a server implementation.
+@@ -1059,4 +1060,15 @@ public interface Server extends PluginMessageRecipient, BukkitRuntime, tc.oc.min
+      * @param components the components to send
+      */
+     public void broadcast(net.md_5.bungee.api.chat.BaseComponent... components);
++
++    // struckbukkit start
++
++    /**
++     * Returns a pool of Redis connections
++     *
++     * @return the jedis connection pool
++     */
++    public JedisPool getRedis();
++
++    // struckbukkit end
+ }
+-- 
+2.7.2
+
