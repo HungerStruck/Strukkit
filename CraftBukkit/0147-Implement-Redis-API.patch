@@ -1,4 +1,4 @@
-From 83240ae73138ba75f7a433c216222a6407c0fc7b Mon Sep 17 00:00:00 2001
+From dc5e67180cf63b1a0abe2b50853e6a74bb4f15b4 Mon Sep 17 00:00:00 2001
 From: Kailan Blanks <kailan@kmp.pw>
 Date: Thu, 31 Mar 2016 15:52:10 +0100
 Subject: [PATCH] Implement Redis API

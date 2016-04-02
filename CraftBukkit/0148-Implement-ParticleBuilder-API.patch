@@ -1,4 +1,4 @@
-From 506127715275f75f310410f84435a79ee91dc0e3 Mon Sep 17 00:00:00 2001
+From 91e10f74d0b290bf0c60668acaf61243fd488ffb Mon Sep 17 00:00:00 2001
 From: Kailan Blanks <kailan@kmp.pw>
 Date: Sat, 2 Apr 2016 17:25:44 +0100
 Subject: [PATCH] Implement ParticleBuilder API
