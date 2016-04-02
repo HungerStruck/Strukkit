@@ -1,0 +1,26 @@
+From a573a6d108eaf2f42f8e66ea8513cdb0506c47df Mon Sep 17 00:00:00 2001
+From: Kailan Blanks <kailan@kmp.pw>
+Date: Sat, 2 Apr 2016 21:34:35 +0100
+Subject: [PATCH] Implement bounding box API
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
+index 7b61b88..cdb938b 100644
+--- a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
++++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
+@@ -755,4 +755,12 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
+         return Cuboid.between(ImmutableVector.of(bb.a, bb.b, bb.c),
+                               ImmutableVector.of(bb.d, bb.e, bb.f));
+     }
++
++    // struckbukkit start
++    
++    public void setSize(float width, float length) {
++      entity.setSize(width, length);
++    }
++
++    // struckbukkit end
+ }
+-- 
+2.7.2
+

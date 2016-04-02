@@ -1,0 +1,27 @@
+From f2f02e0b3e5137f9166f243de25526acdbc673d7 Mon Sep 17 00:00:00 2001
+From: Kailan Blanks <kailan@kmp.pw>
+Date: Sat, 2 Apr 2016 21:33:38 +0100
+Subject: [PATCH] Add bounding box API
+
+
+diff --git a/src/main/java/org/bukkit/entity/Entity.java b/src/main/java/org/bukkit/entity/Entity.java
+index 43f5f50..371d80d 100644
+--- a/src/main/java/org/bukkit/entity/Entity.java
++++ b/src/main/java/org/bukkit/entity/Entity.java
+@@ -446,4 +446,13 @@ public interface Entity extends Metadatable, CommandSender, Physical {
+     public boolean isInvulnerable();
+ 
+     Cuboid getBoundingBox();
++
++    // struckbukkit start
++
++    /**
++      * Sets the entity's bounding box size
++      */
++    void setSize(float width, float length);
++
++    // struckbukkit end
+ }
+-- 
+2.7.2
+
