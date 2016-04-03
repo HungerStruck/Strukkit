@@ -39,7 +39,7 @@ index 960410b..269fdf4 100644
          <dependency>
 -            <groupId>tc.oc</groupId>
 -            <artifactId>sportbukkit-api</artifactId>
-+            <groupId>co.envairk</groupId>
++            <groupId>co.enviark</groupId>
 +            <artifactId>struckbukkit-api</artifactId>
              <version>${project.version}</version>
              <type>jar</type>
