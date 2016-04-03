@@ -1,0 +1,93 @@
+From eeedc0716531f1c2e47bf49a3ed751269f07a7f9 Mon Sep 17 00:00:00 2001
+From: skreem <cskreem@gmail.com>
+Date: Sat, 2 Apr 2016 23:19:51 -0400
+Subject: [PATCH] Add AnimalBreedEvent
+
+
+diff --git a/src/main/java/org/bukkit/event/entity/AnimalBreedEvent.java b/src/main/java/org/bukkit/event/entity/AnimalBreedEvent.java
+new file mode 100644
+index 0000000..e6405db
+--- /dev/null
++++ b/src/main/java/org/bukkit/event/entity/AnimalBreedEvent.java
+@@ -0,0 +1,78 @@
++package org.bukkit.event.entity;
++
++
++import org.bukkit.Location;
++import org.bukkit.entity.Entity;
++import org.bukkit.entity.LivingEntity;
++import org.bukkit.event.Cancellable;
++import org.bukkit.event.HandlerList;
++
++/**
++ * StruckBukkit - Add AnimalBreedEvent
++ * Called when a creature is born as a byproduct of breeding
++ * <p>
++ * If a Creature Spawn event is cancelled, the creature will not spawn.
++ */
++public class AnimalBreedEvent extends EntityEvent implements Cancellable {
++    private static final HandlerList handlers = new HandlerList();
++    private boolean canceled;
++
++    protected Entity parentA;
++    protected Entity parentB;
++
++    public AnimalBreedEvent(final LivingEntity spawnee, final LivingEntity parentA, final LivingEntity parentB) {
++        super(spawnee);
++        this.parentA = parentA;
++        this.parentB = parentB;
++    }
++
++
++    public boolean isCancelled() {
++        return canceled;
++    }
++
++    public void setCancelled(boolean cancel) {
++        canceled = cancel;
++    }
++
++    /**
++     * @return One of the involved parents (A)
++     */
++    public LivingEntity getParentA() {
++        return (LivingEntity) parentA;
++    }
++
++    /**
++     * @return One of the involved parents (B)
++     */
++    public LivingEntity getParentB() {
++        return (LivingEntity) parentB;
++    }
++
++    /**
++     * @return The child
++     */
++    @Override
++    public LivingEntity getEntity() {
++        return (LivingEntity) entity;
++    }
++
++    /**
++     * Gets the location at which the creature is spawning.
++     *
++     * @return The location at which the creature is spawning
++     */
++    public Location getLocation() {
++        return getEntity().getLocation();
++    }
++
++    @Override
++    public HandlerList getHandlers() {
++        return handlers;
++    }
++
++    public static HandlerList getHandlerList() {
++        return handlers;
++    }
++
++}
+-- 
+2.7.1
+

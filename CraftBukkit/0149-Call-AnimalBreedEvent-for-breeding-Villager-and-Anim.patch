@@ -1,0 +1,114 @@
+From fc85eff5f4326473f6f5a6ff0efb83f966e9ceb9 Mon Sep 17 00:00:00 2001
+From: skreem <cskreem@gmail.com>
+Date: Sat, 2 Apr 2016 23:20:48 -0400
+Subject: [PATCH] Call AnimalBreedEvent for breeding (Villager and Animal)
+
+
+diff --git a/src/main/java/net/minecraft/server/PathfinderGoalBreed.java b/src/main/java/net/minecraft/server/PathfinderGoalBreed.java
+index 99cac40..8bd6db1 100644
+--- a/src/main/java/net/minecraft/server/PathfinderGoalBreed.java
++++ b/src/main/java/net/minecraft/server/PathfinderGoalBreed.java
+@@ -93,7 +93,7 @@ public class PathfinderGoalBreed extends PathfinderGoal {
+             this.partner.resetLove();
+             entityageable.setAgeRaw(-24000);
+             entityageable.setPositionRotation(this.animal.locX, this.animal.locY, this.animal.locZ, 0.0F, 0.0F);
+-            this.a.addEntity(entityageable, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING); // CraftBukkit - added SpawnReason
++            this.a.addEntity(entityageable, animal, partner); // StruckBukkit - Used modified addEntity(), provides parental information
+             Random random = this.animal.getRandom();
+ 
+             for (int i = 0; i < 7; ++i) {
+diff --git a/src/main/java/net/minecraft/server/PathfinderGoalMakeLove.java b/src/main/java/net/minecraft/server/PathfinderGoalMakeLove.java
+index 264654d..97a8e6f 100644
+--- a/src/main/java/net/minecraft/server/PathfinderGoalMakeLove.java
++++ b/src/main/java/net/minecraft/server/PathfinderGoalMakeLove.java
+@@ -87,7 +87,7 @@ public class PathfinderGoalMakeLove extends PathfinderGoal {
+         this.b.r(false);
+         entityvillager.setAgeRaw(-24000);
+         entityvillager.setPositionRotation(this.b.locX, this.b.locY, this.b.locZ, 0.0F, 0.0F);
+-        this.d.addEntity(entityvillager, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING); // CraftBukkit - added SpawnReason
++        this.d.addEntity(entityvillager, b, c); // StruckBukkit - Used modified addEntity(), provides parental information
+         this.d.broadcastEntityEffect(entityvillager, (byte) 12);
+     }
+ }
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index f038517..089fc7a 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -27,6 +27,8 @@ import org.bukkit.event.block.BlockCanBuildEvent;
+ import org.bukkit.event.block.BlockPhysicsEvent;
+ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+ import org.bukkit.generator.ChunkGenerator;
++
++import javax.annotation.Nullable;
+ // CraftBukkit end
+ 
+ public abstract class World implements IBlockAccess {
+@@ -896,7 +898,16 @@ public abstract class World implements IBlockAccess {
+         return addEntity(entity, SpawnReason.DEFAULT);
+     }
+ 
+-    public boolean addEntity(Entity entity, SpawnReason spawnReason) { // Changed signature, added SpawnReason
++    public boolean addEntity(Entity entity, SpawnReason spawnReason) { // CraftBukkit - Changed signature, added SpawnReason
++        return addEntity(entity, null, null, spawnReason); // StruckBukkit - spawns an entity without trace to parents (breeding)
++    }
++
++    public boolean addEntity(Entity entity, @Nullable Entity parentA, @Nullable Entity parentB) {
++        // StruckBukkit start - Used for animals/villagers that were bred into existence
++        return addEntity(entity, parentA, parentB, SpawnReason.BREEDING);
++    }
++
++    private boolean addEntity(Entity entity, @Nullable Entity parentA, @Nullable Entity parentB, SpawnReason spawnReason) {
+         if (entity == null) return false;
+ 
+         // Workaround for https://bugs.mojang.com/browse/MC-72248
+@@ -932,7 +943,13 @@ public abstract class World implements IBlockAccess {
+                 }
+             }
+ 
+-            event = CraftEventFactory.callCreatureSpawnEvent((EntityLiving) entity, spawnReason);
++            // StruckBukkit start
++            if(parentA == null || parentB == null) {
++                event = CraftEventFactory.callCreatureSpawnEvent((EntityLiving) entity, spawnReason);
++            } else {
++                event = CraftEventFactory.callAnimalBreedEvent((EntityLiving) entity, (EntityLiving) parentA, (EntityLiving) parentB);
++            }
++            // StruckBukkit end
+         } else if (entity instanceof EntityItem) {
+             event = CraftEventFactory.callItemSpawnEvent((EntityItem) entity);
+         } else if (entity.getBukkitEntity() instanceof org.bukkit.entity.Projectile) {
+@@ -962,6 +979,7 @@ public abstract class World implements IBlockAccess {
+             this.b(entity);
+             return true;
+         }
++
+     }
+ 
+     protected void b(Entity entity) {
+diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+index 531bd9e..e522b23 100644
+--- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
++++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+@@ -279,6 +279,20 @@ public class CraftEventFactory {
+     }
+ 
+     /**
++     * AnimalBreedEvent
++     */
++    public static AnimalBreedEvent callAnimalBreedEvent(EntityLiving childLiving, EntityLiving parentALiving, EntityLiving parentBLiving) {
++        LivingEntity child = (LivingEntity) childLiving.getBukkitEntity();
++        LivingEntity parentA = (LivingEntity) parentALiving.getBukkitEntity();
++        LivingEntity parentB = (LivingEntity) parentBLiving.getBukkitEntity();
++        CraftServer craftServer = (CraftServer) child.getServer();
++
++        AnimalBreedEvent event = new AnimalBreedEvent(child, parentA, parentB);
++        craftServer.getPluginManager().callEvent(event);
++        return event;
++    }
++
++    /**
+      * CreatureSpawnEvent
+      */
+     public static CreatureSpawnEvent callCreatureSpawnEvent(EntityLiving entityliving, SpawnReason spawnReason) {
+-- 
+2.7.1
+
