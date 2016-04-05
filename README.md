@@ -1,6 +1,8 @@
 StruckBukkit
 ===========
 
+:warning: This is the 1.8 branch!
+
 HungerStruck/Enviark's fork of SportBukkit.
 
 How To
