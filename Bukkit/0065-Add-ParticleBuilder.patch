@@ -1,0 +1,363 @@
+From 8f9a94222b27110ce4c9f8e6250f3dd8044c6b30 Mon Sep 17 00:00:00 2001
+From: Thomas Eddy <me@it3d.co>
+Date: Tue, 5 Apr 2016 16:48:47 +0100
+Subject: [PATCH] Add ParticleBuilder
+
+
+diff --git a/src/main/java/co/enviark/struckbukkit/effects/Particle.java b/src/main/java/co/enviark/struckbukkit/effects/Particle.java
+new file mode 100644
+index 0000000..330e158
+--- /dev/null
++++ b/src/main/java/co/enviark/struckbukkit/effects/Particle.java
+@@ -0,0 +1,50 @@
++package co.enviark.struckbukkit.effects;
++
++/**
++ * This will be switched with org.bukkit.Particle in 1.9
++ */
++@Deprecated
++public enum Particle {
++    EXPLOSION_NORMAL,
++    EXPLOSION_LARGE,
++    EXPLOSION_HUGE,
++    FIREWORKS_SPARK,
++    WATER_BUBBLE,
++    WATER_SPLASH,
++    WATER_WAKE,
++    SUSPENDED,
++    SUSPENDED_DEPTH,
++    CRIT,
++    CRIT_MAGIC,
++    SMOKE_NORMAL,
++    SMOKE_LARGE,
++    SPELL,
++    SPELL_INSTANT,
++    SPELL_MOB,
++    SPELL_MOB_AMBIENT,
++    SPELL_WITCH,
++    DRIP_WATER,
++    DRIP_LAVA,
++    VILLAGER_ANGRY,
++    VILLAGER_HAPPY,
++    TOWN_AURA,
++    NOTE,
++    PORTAL,
++    ENCHANTMENT_TABLE,
++    FLAME,
++    LAVA,
++    FOOTSTEP,
++    CLOUD,
++    REDSTONE,
++    SNOWBALL,
++    SNOW_SHOVEL,
++    SLIME,
++    HEART,
++    BARRIER,
++    ITEM_CRACK,
++    BLOCK_CRACK,
++    BLOCK_DUST,
++    WATER_DROP,
++    ITEM_TAKE,
++    MOB_APPEARANCE;
++}
+diff --git a/src/main/java/co/enviark/struckbukkit/effects/ParticleBuilder.java b/src/main/java/co/enviark/struckbukkit/effects/ParticleBuilder.java
+new file mode 100644
+index 0000000..cac735b
+--- /dev/null
++++ b/src/main/java/co/enviark/struckbukkit/effects/ParticleBuilder.java
+@@ -0,0 +1,219 @@
++package co.enviark.struckbukkit.effects;
++
++import org.bukkit.Location;
++
++public class ParticleBuilder {
++
++    private Particle particle = Particle.FLAME;
++    private boolean longDistance = false;
++    private Location location = null;
++    private float offsetX = 0, offsetY = 0, offsetZ = 0, speed = 0;
++    private int count = 0;
++    private int[] data = new int[0];
++
++    /**
++     * Gets the current set particle
++     *
++     * @return
++     */
++    public Particle getParticle() {
++        return particle;
++    }
++
++    /**
++     * Sets a new particle
++     *
++     * @param particle
++     * @return
++     */
++    public ParticleBuilder setParticle(Particle particle) {
++        this.particle = particle;
++        return this;
++    }
++
++    /**
++     * Can it be seen from further then 256 blocks?
++     *
++     * @return
++     */
++    public boolean isLongDistance() {
++        return longDistance;
++    }
++
++    /**
++     * Set if it can be seen from further then 256 blocks
++     *
++     * @param longDistance
++     * @return
++     */
++    public ParticleBuilder setLongDistance(boolean longDistance) {
++        this.longDistance = longDistance;
++        return this;
++    }
++
++    /**
++     * Get where the particle will play
++     *
++     * @return
++     */
++    public Location getLocation() {
++        return location;
++    }
++
++    /**
++     * Set where the particle will play
++     *
++     * @param location
++     * @return
++     */
++    public ParticleBuilder setLocation(Location location) {
++        this.location = location;
++        return this;
++    }
++
++    /**
++     * Sets offset for X, Y, Z
++     *
++     * @param offsetX
++     * @param offsetY
++     * @param offsetZ
++     * @return
++     */
++    public ParticleBuilder setOffset(float offsetX, float offsetY, float offsetZ) {
++        this.offsetX = offsetX;
++        this.offsetY = offsetY;
++        this.offsetZ = offsetZ;
++        return this;
++    }
++
++    /**
++     * Sets offset for X, Y, Z
++     *
++     * @param offset
++     * @return
++     */
++    public ParticleBuilder setOffset(float offset) {
++        return setOffset(offset, offset, offset);
++    }
++
++    /**
++     * Gets offset for X
++     *
++     * @return
++     */
++    public float getOffsetX() {
++        return offsetX;
++    }
++
++    /**
++     * Sets offset for X
++     *
++     * @param offsetX
++     * @return
++     */
++    public ParticleBuilder setOffsetX(float offsetX) {
++        this.offsetX = offsetX;
++        return this;
++    }
++
++    /**
++     * Gets offset for Y
++     *
++     * @return
++     */
++    public float getOffsetY() {
++        return offsetY;
++    }
++
++    /**
++     * Sets offset for Y
++     *
++     * @param offsetY
++     * @return
++     */
++    public ParticleBuilder setOffsetY(float offsetY) {
++        this.offsetY = offsetY;
++        return this;
++    }
++
++    /**
++     * Gets offset for Z
++     *
++     * @return
++     */
++    public float getOffsetZ() {
++        return offsetZ;
++    }
++
++    /**
++     * Sets offset for Z
++     *
++     * @param offsetZ
++     * @return
++     */
++    public ParticleBuilder setOffsetZ(float offsetZ) {
++        this.offsetZ = offsetZ;
++        return this;
++    }
++
++    /**
++     * Gets particle speed
++     *
++     * @return
++     */
++    public float getSpeed() {
++        return speed;
++    }
++
++    /**
++     * Sets particle speed
++     *
++     * @param speed
++     * @return
++     */
++    public ParticleBuilder setSpeed(float speed) {
++        this.speed = speed;
++        return this;
++    }
++
++    /**
++     * Gets particle count
++     *
++     * @return
++     */
++    public int getCount() {
++        return count;
++    }
++
++    /**
++     * Sets particle count
++     *
++     * @param count
++     * @return
++     */
++    public ParticleBuilder setCount(int count) {
++        this.count = count;
++        return this;
++    }
++
++    /**
++     * Gets particle data
++     *
++     * @return
++     */
++    public int[] getData() {
++        return data;
++    }
++
++    /**
++     * Sets particle data
++     *
++     * @param data
++     * @return
++     */
++    public ParticleBuilder setData(int... data) {
++        this.data = data;
++        return this;
++    }
++
++}
+diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
+index 2519937..5684040 100644
+--- a/src/main/java/org/bukkit/entity/Player.java
++++ b/src/main/java/org/bukkit/entity/Player.java
+@@ -1,21 +1,7 @@
+ package org.bukkit.entity;
+ 
+-import java.net.InetSocketAddress;
+-import java.util.Set;
+-
+-import org.bukkit.Achievement;
+-import org.bukkit.ChatColor;
+-import org.bukkit.Effect;
+-import org.bukkit.Instrument;
+-import org.bukkit.Location;
+-import org.bukkit.Material;
+-import org.bukkit.Note;
+-import org.bukkit.OfflinePlayer;
+-import org.bukkit.ResourcePackStatus;
+-import org.bukkit.Skin;
+-import org.bukkit.Sound;
+-import org.bukkit.Statistic;
+-import org.bukkit.WeatherType;
++import co.enviark.struckbukkit.effects.ParticleBuilder;
++import org.bukkit.*;
+ import org.bukkit.command.CommandSender;
+ import org.bukkit.conversations.Conversable;
+ import org.bukkit.map.MapView;
+@@ -23,6 +9,9 @@ import org.bukkit.plugin.messaging.PluginMessageRecipient;
+ import org.bukkit.scoreboard.Scoreboard;
+ import org.bukkit.util.RayBlockIntersection;
+ 
++import java.net.InetSocketAddress;
++import java.util.Set;
++
+ /**
+  * Represents a player, connected or not
+  */
+@@ -1383,4 +1372,34 @@ public interface Player extends HumanEntity, Conversable, CommandSender, Offline
+      * @return Information about the targeted block, or null if no blocks were found
+      */
+     RayBlockIntersection getTargetedBlock(boolean nonSolids, boolean liquids);
++
++    // struckbukkit start
++
++    Particles particles();
++
++    interface Particles {
++
++        /**
++         * Plays specified particle to player
++         *
++         * @param builder
++         * @return
++         */
++        ParticleBuilder play(ParticleBuilder builder);
++
++        /**
++         * Plays specified particle to player
++         * with custom RGB value (Must be REDSTONE particle)
++         *
++         * @param r
++         * @param g
++         * @param b
++         * @param builder
++         * @return
++         */
++        ParticleBuilder playRGB(int r, int g, int b, ParticleBuilder builder);
++
++    }
++
++    // struckbukkit end
+ }
+-- 
+2.6.4 (Apple Git-63)
+
