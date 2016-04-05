@@ -1,0 +1,153 @@
+From 7484f3e72560479ac7452602ba914702f56b8b4d Mon Sep 17 00:00:00 2001
+From: Thomas Eddy <me@it3d.co>
+Date: Tue, 5 Apr 2016 16:48:12 +0100
+Subject: [PATCH] Add ParticleBuilder
+
+
+diff --git a/src/main/java/co/enviark/struckbukkit/effects/StruckParticle.java b/src/main/java/co/enviark/struckbukkit/effects/StruckParticle.java
+new file mode 100644
+index 0000000..e510316
+--- /dev/null
++++ b/src/main/java/co/enviark/struckbukkit/effects/StruckParticle.java
+@@ -0,0 +1,11 @@
++package co.enviark.struckbukkit.effects;
++
++import net.minecraft.server.EnumParticle;
++
++public class StruckParticle {
++
++    public static EnumParticle toNMSParticle(Particle particle) {
++        return EnumParticle.valueOf(particle.name());
++    }
++
++}
+diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
+index e682c1f..32b542d 100644
+--- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
++++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
+@@ -1,38 +1,19 @@
+ package org.bukkit.craftbukkit.entity;
+ 
++import co.enviark.struckbukkit.effects.ParticleBuilder;
++import co.enviark.struckbukkit.effects.StruckParticle;
+ import com.google.common.base.Objects;
+ import com.google.common.collect.ImmutableSet;
+ import com.mojang.authlib.GameProfile;
+ import io.netty.buffer.Unpooled;
+-
+-import java.io.ByteArrayOutputStream;
+-import java.io.IOException;
+-import java.net.InetSocketAddress;
+-import java.net.SocketAddress;
+-import java.util.ArrayList;
+-import java.util.Collection;
+-import java.util.HashSet;
+-import java.util.LinkedHashMap;
+-import java.util.List;
+-import java.util.Map;
+-import java.util.Set;
+-import java.util.UUID;
+-import java.util.logging.Level;
+-import java.util.logging.Logger;
+ import net.md_5.bungee.api.chat.BaseComponent;
+-
+-import java.util.WeakHashMap;
+-import java.util.Arrays;
+-
+ import net.minecraft.server.*;
+-
+-import org.apache.commons.lang.Validate;
+ import org.apache.commons.lang.NotImplementedException;
+-import org.bukkit.*;
++import org.apache.commons.lang.Validate;
+ import org.bukkit.Achievement;
+-import org.bukkit.BanList;
+-import org.bukkit.Statistic;
++import org.bukkit.*;
+ import org.bukkit.Material;
++import org.bukkit.Statistic;
+ import org.bukkit.Statistic.Type;
+ import org.bukkit.World;
+ import org.bukkit.command.CommandSender;
+@@ -40,14 +21,9 @@ import org.bukkit.configuration.serialization.DelegateDeserialization;
+ import org.bukkit.conversations.Conversation;
+ import org.bukkit.conversations.ConversationAbandonedEvent;
+ import org.bukkit.conversations.ManuallyAbandonedConversationCanceller;
++import org.bukkit.craftbukkit.*;
+ import org.bukkit.craftbukkit.block.CraftSign;
+ import org.bukkit.craftbukkit.conversations.ConversationTracker;
+-import org.bukkit.craftbukkit.CraftEffect;
+-import org.bukkit.craftbukkit.CraftOfflinePlayer;
+-import org.bukkit.craftbukkit.CraftServer;
+-import org.bukkit.craftbukkit.CraftSound;
+-import org.bukkit.craftbukkit.CraftStatistic;
+-import org.bukkit.craftbukkit.CraftWorld;
+ import org.bukkit.craftbukkit.map.CraftMapView;
+ import org.bukkit.craftbukkit.map.RenderData;
+ import org.bukkit.craftbukkit.scoreboard.CraftScoreboard;
+@@ -70,6 +46,14 @@ import org.bukkit.plugin.messaging.StandardMessenger;
+ import org.bukkit.scoreboard.Scoreboard;
+ import org.bukkit.util.RayBlockIntersection;
+ 
++import java.io.ByteArrayOutputStream;
++import java.io.IOException;
++import java.net.InetSocketAddress;
++import java.net.SocketAddress;
++import java.util.*;
++import java.util.logging.Level;
++import java.util.logging.Logger;
++
+ @DelegateDeserialization(CraftOfflinePlayer.class)
+ public class CraftPlayer extends CraftHumanEntity implements Player {
+     private long firstPlayed = 0;
+@@ -86,6 +70,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+     private boolean showInvisibles;
+     private ResourcePackStatus resourcePackStatus;
+     private String resourcePackHash;
++    private Particles particles;
+ 
+     private final Map<CommandSender, String> fakeNames = new WeakHashMap<CommandSender, String>();
+     private final Map<CommandSender, String> fakeDisplayNames = new WeakHashMap<CommandSender, String>();
+@@ -96,6 +81,8 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+ 
+         firstPlayed = System.currentTimeMillis();
+         this.realSkin = this.getSkin();
++
++        this.particles = new Particles();
+     }
+ 
+     public GameProfile getProfile() {
+@@ -1887,4 +1874,30 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+     public int getProtocolVersion() {
+         return 47;
+     }
++
++    @Override
++    public Player.Particles particles() {
++        return particles;
++    }
++
++    public class Particles implements Player.Particles {
++        public ParticleBuilder play(ParticleBuilder builder) {
++            if (builder.getLocation() == null)
++                throw new NullPointerException("ParticleBuilder location must not be null!");
++            Packet packet = new PacketPlayOutWorldParticles(StruckParticle.toNMSParticle(builder.getParticle()), builder.isLongDistance(), (float) builder.getLocation().getX(), (float) builder.getLocation().getY(), (float) builder.getLocation().getZ(), builder.getOffsetX(), builder.getOffsetY(), builder.getOffsetZ(), builder.getSpeed(), builder.getCount(), builder.getData());
++
++            getHandle().playerConnection.sendPacket(packet);
++            return builder;
++        }
++
++        public ParticleBuilder playRGB(int r, int g, int b, ParticleBuilder builder) {
++            builder.setOffsetX((float) r / 255);
++            builder.setOffsetY((float) g / 255);
++            builder.setOffsetZ((float) b / 255);
++            builder.setSpeed(1f);
++            builder.setCount(0);
++
++            return play(builder);
++        }
++    }
+ }
+-- 
+2.6.4 (Apple Git-63)
+
