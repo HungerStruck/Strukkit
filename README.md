@@ -1,4 +1,4 @@
-StruckBukkit
+Strukkit
 ===========
 
 :warning: This is the 1.8 branch!
@@ -9,14 +9,14 @@ How To
 ------
 
 Build everything from scratch: `./build.sh`
-*The StruckBukkit binary will be located in build/CraftBukkit/target*
+*The Strukkit binary will be located in build/CraftBukkit/target*
 
-Generate patched StruckBukkit source code: `./prepare-build.sh`
+Generate patched Strukkit source code: `./prepare-build.sh`
 *Generated source will be in build/Bukkit and build/CraftBukkit*
 
-Compile StruckBukkit from source: `./compile.sh`
+Compile Strukkit from source: `./compile.sh`
 
-Rebuild StruckBukkit patches from source: `./rebuild-patches.sh`
+Rebuild Strukkit patches from source: `./rebuild-patches.sh`
 
-Remove all generated files, **including the StruckBukkit source**: `./clean.sh`
+Remove all generated files, **including the Strukkit source**: `./clean.sh`
 
