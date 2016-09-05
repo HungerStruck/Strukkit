@@ -1,0 +1,33 @@
+From 28ba47df563e4d3e3331f22acc6600f7bd0f08d1 Mon Sep 17 00:00:00 2001
+From: hdt80 <ifyoucanrememberthisforgetit@gmail.com>
+Date: Mon, 5 Sep 2016 11:48:46 -0700
+Subject: [PATCH] Add UnderwaterVelocityModifier
+
+
+diff --git a/src/main/java/org/bukkit/entity/Projectile.java b/src/main/java/org/bukkit/entity/Projectile.java
+index a5599fa..94eac20 100644
+--- a/src/main/java/org/bukkit/entity/Projectile.java
++++ b/src/main/java/org/bukkit/entity/Projectile.java
+@@ -57,4 +57,19 @@ public interface Projectile extends Entity {
+      * @param doesBounce whether or not it should bounce.
+      */
+     public void setBounce(boolean doesBounce);
++
++    /**
++     * Retrieve the underwater velocity modifier of this projectile.
++     *
++     * @return The underwater velocity modifier of this projectile.
++     */
++    public float getUnderwaterVelocityModifier();
++
++    /**
++     * Set the underwater velocity modifier of this projectile. This is used to control
++     * how far the projectile will travel. By default, the underwater velocity modifier is 0.6F
++     *
++     * @param velocity The new underwater velocity modifier of this projectile
++     */
++    public void setUnderwaterVelocityModifier(float velocity);
+ }
+-- 
+2.8.1.windows.1
+
