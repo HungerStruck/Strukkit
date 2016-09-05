@@ -1,4 +1,4 @@
-From 88bff67c584a217bb0327040bd9cbc11a4c8638e Mon Sep 17 00:00:00 2001
+From b9c9a2f3302f2691823792c35f2d766427444a45 Mon Sep 17 00:00:00 2001
 From: Antony Riley <antony@cyberiantiger.org>
 Date: Wed, 27 Mar 2013 01:41:54 +0200
 Subject: [PATCH] Close Unloaded Save Files
@@ -54,5 +54,5 @@ index 9b899a1..77ac4d0 100644
      }
  
 -- 
-1.9.0
+2.8.1.windows.1
 
