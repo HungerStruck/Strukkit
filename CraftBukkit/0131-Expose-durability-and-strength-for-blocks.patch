@@ -1,0 +1,43 @@
+From 7c285a87e27e8534d057efdb83a0c1f6e1b51671 Mon Sep 17 00:00:00 2001
+From: skipperguy12 <neiljohari@gmail.com>
+Date: Mon, 5 Sep 2016 10:01:17 -0400
+Subject: [PATCH] Expose durability and strength for blocks
+
+
+diff --git a/src/main/java/net/minecraft/server/Block.java b/src/main/java/net/minecraft/server/Block.java
+index 4923f8b..9513af1 100644
+--- a/src/main/java/net/minecraft/server/Block.java
++++ b/src/main/java/net/minecraft/server/Block.java
+@@ -80,6 +80,10 @@ public class Block {
+     private IBlockData blockData;
+     private String name;
+ 
++    public float getDurability() { return durability; }
++
++    public float getStrength() { return strength; }
++
+     public static int getId(Block block) {
+         return Block.REGISTRY.b(block);
+     }
+diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftBlock.java b/src/main/java/org/bukkit/craftbukkit/block/CraftBlock.java
+index b54325c..d3135f0 100644
+--- a/src/main/java/org/bukkit/craftbukkit/block/CraftBlock.java
++++ b/src/main/java/org/bukkit/craftbukkit/block/CraftBlock.java
+@@ -114,6 +114,14 @@ public class CraftBlock implements Block {
+         return (byte) blockData.getBlock().toLegacyData(blockData);
+     }
+ 
++    public float getDurability() {
++        return getNMSBlock().getDurability();
++    }
++
++    public float getStrength() {
++        return getNMSBlock().getDurability();
++    }
++
+     public void setType(final Material type) {
+         setType(type, true);
+     }
+-- 
+1.9.4.msysgit.2
+

@@ -1,0 +1,34 @@
+From a168511beb380460dc0f772e1d170b3a6c2e2de2 Mon Sep 17 00:00:00 2001
+From: skipperguy12 <neiljohari@gmail.com>
+Date: Mon, 5 Sep 2016 10:01:43 -0400
+Subject: [PATCH] Add durability and strength to API
+
+
+diff --git a/src/main/java/org/bukkit/block/Block.java b/src/main/java/org/bukkit/block/Block.java
+index 158bd8f..fd2ef03 100644
+--- a/src/main/java/org/bukkit/block/Block.java
++++ b/src/main/java/org/bukkit/block/Block.java
+@@ -183,6 +183,20 @@ public interface Block extends Metadatable, Physical {
+     void setData(byte data, boolean applyPhysics);
+ 
+     /**
++     * Gets the durability for this block
++     *
++     * @return durability
++     */
++    float getDurability();
++
++    /**
++     * Gets the strength for this block
++     *
++     * @return strength
++     */
++    float getStrength();
++
++    /**
+      * Sets the type of this block
+      *
+      * @param type Material to change this block to
+-- 
+1.9.4.msysgit.2
+
